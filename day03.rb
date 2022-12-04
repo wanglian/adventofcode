@@ -1,5 +1,4 @@
-file = File.open 'day03.txt'
-data = file.readlines.map(&:chomp)
+data = File.open('input/day03.txt').readlines.map(&:chomp)
 
 mapping = {}
 ('a'..'z').each_with_index { |l, i| mapping[l] = i + 1 }

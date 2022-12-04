@@ -1,4 +1,4 @@
-data = File.open('day04.txt').readlines.map(&:chomp)
+data = File.open('input/day04.txt').readlines.map(&:chomp)
   .map { |r| r.split(',').map { |g| g.split('-').map(&:to_i) } }
 
 def p1(data)
