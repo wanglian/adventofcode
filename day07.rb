@@ -1,43 +1,50 @@
 data = File.open('input/day07.txt').readlines.map(&:chomp)
 
-dir_sizes = {}
-path = []
-
-data.each do |row|
-  if row[0] == '$'
-    case row[2, 2]
-    when 'cd'
-      if row[5, 2] == '..'
-        key_tmp = path.join('-')
-        tmp = path.pop
-        key = path.join('-')
-        unless dir_sizes[key][1].include?(tmp)
-          dir_sizes[key][0] += dir_sizes[key_tmp][0]
-          dir_sizes[key][1] << tmp
-        end
-      else
-        path.push(row[5, row.length])
-        dir_sizes[path.join('-')] ||= [0, []]
-      end
-    when 'ls'
-      # do nothing
-    end
-  else
-    if row[0, 3] == 'dir'
-      # ignore
-      # cmd, dir = row.split(' ')
-      # dir_sizes[path.last][1] << dir
-      # dir_sizes[path.last][1].uniq!
-    else
-      size, file = row.split(' ')
-      dir_sizes[path.join('-')][0] += size.to_i
-    end
-  end
+def path_key(path, dir = nil)
+  key = path.join('/')
+  dir ? [key, dir].join('/') : key
 end
 
-while tmp = path.pop
-  key = path.join('-')
-  dir_sizes[key][0] += dir_sizes[key + '-' + tmp][0] if path.last && !dir_sizes[key][1].include?(tmp)
+def parse(data)
+  dir_sizes = {}
+  path = []
+
+  data.each do |row|
+    if row[0] == '$'
+      case row[2, 2]
+      when 'cd'
+        if row[5, 2] == '..'
+          key_tmp = path_key(path)
+          tmp = path.pop
+          key = path_key(path)
+          unless dir_sizes[key][1].include?(tmp)
+            dir_sizes[key][0] += dir_sizes[key_tmp][0]
+            dir_sizes[key][1] << tmp
+          end
+        else
+          path.push(row[5, row.length])
+          dir_sizes[path_key(path)] ||= [0, []] # size, subdirs
+        end
+      when 'ls'
+        # do nothing
+      end
+    else
+      if row[0, 3] == 'dir'
+        # ignore
+      else
+        size, file = row.split(' ')
+        dir_sizes[path_key(path)][0] += size.to_i
+      end
+    end
+  end
+
+  while tmp = path.pop
+    key_tmp = path_key(path, tmp)
+    key = path_key(path)
+    dir_sizes[key][0] += dir_sizes[key_tmp][0] if path.last && !dir_sizes[key][1].include?(tmp)
+  end
+
+  dir_sizes
 end
 
 def p1(dir_sizes)
@@ -55,5 +62,6 @@ def p2(dir_sizes)
   target
 end
 
+dir_sizes = parse(data)
 p p1(dir_sizes)
 p p2(dir_sizes)
