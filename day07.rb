@@ -1,6 +1,11 @@
 data = File.open('input/day07.txt').readlines.map(&:chomp)
 
+SIZE_LIMIT = 100000
+SPACE_TOTAL = 70000000
+SPACE_NEEDED = 30000000
+
 def path_key(path, dir = nil)
+  # use full path as key
   key = path.join('/')
   dir ? [key, dir].join('/') : key
 end
@@ -14,16 +19,13 @@ def parse(data)
       case row[2, 2]
       when 'cd'
         if row[5, 2] == '..'
-          key_tmp = path_key(path)
+          # $ cd ..
           tmp = path.pop
-          key = path_key(path)
-          unless dir_sizes[key][1].include?(tmp)
-            dir_sizes[key][0] += dir_sizes[key_tmp][0]
-            dir_sizes[key][1] << tmp
-          end
+          dir_sizes[path_key(path)] += dir_sizes[path_key(path, tmp)]
         else
+          # $ cd dpgwtwp
           path.push(row[5, row.length])
-          dir_sizes[path_key(path)] ||= [0, []] # size, subdirs
+          dir_sizes[path_key(path)] ||= 0
         end
       when 'ls'
         # do nothing
@@ -32,34 +34,34 @@ def parse(data)
       if row[0, 3] == 'dir'
         # ignore
       else
+        # 140007 jstfcllw.tdd
         size, file = row.split(' ')
-        dir_sizes[path_key(path)][0] += size.to_i
+        dir_sizes[path_key(path)] += size.to_i
       end
     end
   end
 
   while tmp = path.pop
-    key_tmp = path_key(path, tmp)
-    key = path_key(path)
-    dir_sizes[key][0] += dir_sizes[key_tmp][0] if path.last && !dir_sizes[key][1].include?(tmp)
+    dir_sizes[path_key(path)] += dir_sizes[path_key(path, tmp)] if path.last
   end
 
   dir_sizes
 end
 
 def p1(dir_sizes)
-  sum = 0
-  dir_sizes.each { |dir, stat| sum += stat[0] if stat[0] <= 100000 }
-  sum
+  dir_sizes.inject(0) do |sum, dir_size|
+    dir_size[1] <= SIZE_LIMIT ? sum + dir_size[1] : sum
+  end
 end
 
 def p2(dir_sizes)
-  needed = dir_sizes['/'][0] - 40000000
-  target = 70000000
-  dir_sizes.each do |dir, stat|
-    target = stat[0] if stat[0]> needed && stat[0] < target
+  used = dir_sizes['/']
+  left = SPACE_TOTAL - used
+  diff = SPACE_NEEDED - left
+  dir_sizes.inject(SPACE_TOTAL) do |target, dir_size|
+    size = dir_size[1]
+    size > diff && size < target ? size : target
   end
-  target
 end
 
 dir_sizes = parse(data)
