@@ -1,3 +1,5 @@
+require 'debug'
+
 def get_input(day)
   File.open("input/day#{day}.txt").readlines.map(&:chomp)
 end
