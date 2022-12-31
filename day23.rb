@@ -72,29 +72,9 @@ def append_column(data)
   data.each { |r| r << '.' }
 end
 
-def move(data, from, to, proposed)
+def move(data, from, to)
   x1, y1 = from
   x2, y2 = to
-  if y2 < 0
-    prepend_row(data)
-    y1 += 1
-    y2 += 1
-    proposed.each do |to, from|
-      to[1] += 1
-      from[1] += 1
-    end
-  end
-  append_row(data) if y2 > data.size - 1
-  if x2 < 0
-    prepend_column(data)
-    x1 += 1
-    x2 += 2
-    proposed.each do |to, from|
-      to[0] += 1
-      from[0] += 1
-    end
-  end
-  append_column(data) if x2 > data.first.size - 1
   data[y1][x1] = '.'
   data[y2][x2] = '#'
 end
@@ -135,6 +115,29 @@ def calc(data)
   data.map {|r| r.count('.')}.sum - trim(data)
 end
 
+def adjust(data, proposed)
+  prepend_y = proposed.select { |pt, pf| pt[1] < 0 }.size > 0
+  prepend_x = proposed.select { |pt, pf| pt[0] < 0 }.size > 0
+  append_y = proposed.select { |pt, pf| pt[1] > data.size - 1 }.size > 0
+  append_x = proposed.select { |pt, pf| pt[0] > data.first.size - 1 }.size > 0
+  if prepend_x || prepend_y
+    proposed.each do |pt, pf|
+      if prepend_x
+        pt[0] += 1
+        pf[0] += 1
+      end
+      if prepend_y
+        pt[1] += 1
+        pf[1] += 1
+      end
+    end
+    prepend_row(data) if prepend_y
+    prepend_column(data) if prepend_x
+  end
+  append_row(data) if append_y
+  append_column(data) if append_x
+end
+
 def p1(data, round=100000)
   direction = 0
 
@@ -145,34 +148,35 @@ def p1(data, round=100000)
       row.each_char.with_index do |c, x|
         next if c == '.'
         next if can_move_all?(data, [x, y])
-        pp = nil
+        to = nil
         ds.each do |d|
           case d
           when 0
-            pp = [x, y-1] if north?(data, [x, y])
+            to = [x, y-1] if north?(data, [x, y])
           when 1
-            pp = [x, y+1] if south?(data, [x, y])
+            to = [x, y+1] if south?(data, [x, y])
           when 2
-            pp = [x-1, y] if west?(data, [x, y])
+            to = [x-1, y] if west?(data, [x, y])
           when 3
-            pp = [x+1, y] if east?(data, [x, y])
+            to = [x+1, y] if east?(data, [x, y])
           end
-          break if pp
+          break if to
         end
-        next unless pp
+        next unless to
 
-        if proposed[pp]
-          proposed[pp] = 'no'
+        if proposed[to]
+          proposed[to] = 'no'
         else
-          proposed[pp] = [x, y]
+          proposed[to] = [x, y]
         end
       end
     end
 
-    proposed = proposed.select { |pp, pos| pos != 'no' }
+    proposed = proposed.select { |to, from| from != 'no' }
     return i + 1 if proposed.empty?
-    proposed.each do |pp, pos|
-      move(data, pos, pp, proposed)
+    adjust(data, proposed)
+    proposed.each do |to, from|
+      move(data, from, to)
     end
   
     # p "round #{i}"
