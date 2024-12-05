@@ -15,7 +15,7 @@ def p1(data)
       if j <= (columns - k)
         result += 1 if match(row[j+1], row[j+2], row[j+3])
         # right up
-        if i >= 3
+        if i >= (k-1)
           result += 1 if match(data[i-1][j+1], data[i-2][j+2], data[i-3][j+3])
         end
         # right down
@@ -24,10 +24,10 @@ def p1(data)
         end
       end
       # left
-      if j >= 3
+      if j >= (k-1)
         result += 1 if match(row[j-1], row[j-2], row[j-3])
         # left up
-        if i >= 3
+        if i >= (k-1)
           result += 1 if match(data[i-1][j-1], data[i-2][j-2], data[i-3][j-3])
         end
         # left down
@@ -40,7 +40,7 @@ def p1(data)
         result += 1 if match(data[i+1][j], data[i+2][j], data[i+3][j])
       end
       # up
-      if i >= 3
+      if i >= (k-1)
         result += 1 if match(data[i-1][j], data[i-2][j], data[i-3][j])
       end
     end
@@ -60,19 +60,27 @@ def p2(data)
   data.each_with_index do |row, i|
     row.each_with_index do |v, j|
       next unless v == 'M'
-      # right
+      # S S
+      #  A
+      # X M
       if i >= (k-1) && j <= (columns-k)
         result += 1 if match2(row[j+2], data[i-1][j+1], data[i-2][j], data[i-2][j+2])
       end
-      # up
+      # S M
+      #  A
+      # S X
       if i >= (k-1) && j >= (k-1)
         result += 1 if match2(data[i-2][j], data[i-1][j-1], row[j-2], data[i-2][j-2])
       end
-      # left
+      # M X
+      #  A
+      # S S
       if i <= (rows-k) && j >= (k-1)
         result += 1 if match2(row[j-2], data[i+1][j-1], data[i+2][j], data[i+2][j-2])
       end
-      # down
+      # X S
+      #  A
+      # M S
       if i <= (rows-k) && j <= (columns-k)
         result += 1 if match2(data[i+2][j], data[i+1][j+1], data[i+2][j+2], row[j+2])
       end
