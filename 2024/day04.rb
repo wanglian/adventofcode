@@ -11,44 +11,44 @@ def p1(data)
   data.each_with_index do |row, i|
     row.each_with_index do |v, j|
       next unless v == 'X'
-      # right
       if j <= (columns - k)
-        result += 1 if match(row[j+1], row[j+2], row[j+3])
+        # right
+        result += 1 if match1(row[j+1], row[j+2], row[j+3])
         # right up
         if i >= (k-1)
-          result += 1 if match(data[i-1][j+1], data[i-2][j+2], data[i-3][j+3])
+          result += 1 if match1(data[i-1][j+1], data[i-2][j+2], data[i-3][j+3])
         end
         # right down
         if i <= (rows - k)
-          result += 1 if match(data[i+1][j+1], data[i+2][j+2], data[i+3][j+3])
+          result += 1 if match1(data[i+1][j+1], data[i+2][j+2], data[i+3][j+3])
         end
       end
-      # left
       if j >= (k-1)
-        result += 1 if match(row[j-1], row[j-2], row[j-3])
+        # left
+        result += 1 if match1(row[j-1], row[j-2], row[j-3])
         # left up
         if i >= (k-1)
-          result += 1 if match(data[i-1][j-1], data[i-2][j-2], data[i-3][j-3])
+          result += 1 if match1(data[i-1][j-1], data[i-2][j-2], data[i-3][j-3])
         end
         # left down
         if i <= (rows - k)
-          result += 1 if match(data[i+1][j-1], data[i+2][j-2], data[i+3][j-3])
+          result += 1 if match1(data[i+1][j-1], data[i+2][j-2], data[i+3][j-3])
         end
       end
       # down
       if i <= (rows - k)
-        result += 1 if match(data[i+1][j], data[i+2][j], data[i+3][j])
+        result += 1 if match1(data[i+1][j], data[i+2][j], data[i+3][j])
       end
       # up
       if i >= (k-1)
-        result += 1 if match(data[i-1][j], data[i-2][j], data[i-3][j])
+        result += 1 if match1(data[i-1][j], data[i-2][j], data[i-3][j])
       end
     end
   end
   result
 end
 
-def match(v1, v2, v3)
+def match1(v1, v2, v3)
   v1 == 'M' && v2 == 'A' && v3 == 'S'
 end
 
