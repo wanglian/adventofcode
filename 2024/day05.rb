@@ -2,23 +2,22 @@ require './utils.rb'
 
 data = get_input("05")
 
-def p1(data)
-  # binding.break
-  rules = []
-  pages = []
+rules = []
+pages = []
 
-  target = rules
-  data.each do |row|
-    if row.empty?
-      target = pages
-    else
-      target << row
-    end
+target = rules
+data.each do |row|
+  if row.empty?
+    target = pages
+  else
+    target << row
   end
+end
 
-  rules = rules.map { |rule| rule.split("|").map(&:to_i) }
-  pages = pages.map { |page| page.split(",").map(&:to_i) }
+rules = rules.map { |rule| rule.split("|").map(&:to_i) }
+pages = pages.map { |page| page.split(",").map(&:to_i) }
 
+def p1(rules, pages)
   pages.each.inject(0) do |sum, numbers|
     sum + if valid_pages?(numbers, rules)
       numbers[numbers.size/2]
@@ -48,22 +47,7 @@ def valid_page?(m, n, rules)
   true
 end
 
-def p2(data)
-  rules = []
-  pages = []
-
-  target = rules
-  data.each do |row|
-    if row.empty?
-      target = pages
-    else
-      target << row
-    end
-  end
-
-  rules = rules.map { |rule| rule.split("|").map(&:to_i) }
-  pages = pages.map { |page| page.split(",").map(&:to_i) }
-
+def p2(rules, pages)
   pages.each.inject(0) do |sum, numbers|
     sum + if valid_pages?(numbers, rules)
       0
@@ -89,5 +73,5 @@ def correct(numbers, rules)
   end
 end
 
-p p1(data)
-p p2(data)
+p p1(rules, pages)
+p p2(rules, pages)
