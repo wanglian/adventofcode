@@ -47,6 +47,7 @@ def p2(data)
   mx, my = data.size, data[0].size
   results = {}
   frequencies.each do |f, locations|
+    next if locations.size < 2
     locations.each_with_index do |l1, i|
       results[l1] = true
       j = i+1
