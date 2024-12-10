@@ -97,4 +97,4 @@ def p2(data)
 end
 
 # p p1(data)
-p p2(data)
+with_time { p p2(data) }
