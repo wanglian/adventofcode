@@ -1,4 +1,5 @@
 #!/bin/bash
-cp ./skeleton.rb ./day$1.rb
-touch ./input/day$1.txt
+day=$1
+sed -e "s/{day}/$day/g" ./skeleton.rb > ./day$day.rb
+touch ./input/day$day.txt
 git add .

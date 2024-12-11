@@ -1,6 +1,6 @@
 require './utils.rb'
 
-data = get_input("01")
+data = get_input("{day}")
 
 def p1(data)
   # binding.break
