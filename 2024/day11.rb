@@ -27,11 +27,11 @@ def blink(data)
 end
 
 def p2(data)
-  data.inject(0) { |sum, d| sum + blink2(d) }
+  data.inject(0) { |sum, d| sum + blink2(d, 75) }
 end
 
 @cache = {}
-def blink2(n, k=75)
+def blink2(n, k)
   return @cache[[n, k]] if @cache[[n, k]]
   re = if n == '0'
     return 1 if k == 1
@@ -48,5 +48,7 @@ def blink2(n, k=75)
   re
 end
 
-# p p1(data)
-p p2(data)
+p "Problem 1:"
+with_time { p p1(data) }
+p "Problem 2:"
+with_time { p p2(data) }

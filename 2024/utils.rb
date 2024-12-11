@@ -7,10 +7,10 @@ end
 
 def with_time
   t1 = Time.now
-  p "S: #{t1}"
+  # p "S: #{t1}"
   yield
   t2 = Time.now
-  p "E: #{t2}"
+  # p "E: #{t2}"
   p "Time used: #{t2 - t1}"
 end
 
