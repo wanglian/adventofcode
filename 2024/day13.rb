@@ -43,7 +43,7 @@ def p1(data)
   machines = parse(data)
   result = 0
   machines.each do |machine|
-    tokens = calc(machine)
+    tokens = calc(machine, 100)
     result += tokens if tokens > 0
   end
   result
