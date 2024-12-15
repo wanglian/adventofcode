@@ -47,7 +47,7 @@ def cal(x, mod)
 end
 
 def p2(data)
-  i = 6180
+  i = 6300 # 6398
   while true
     move(data, i)
     i += 1
