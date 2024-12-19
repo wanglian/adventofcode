@@ -2,16 +2,19 @@ require './utils.rb'
 
 data = get_input("19")
 
-def p1(data)
-  # binding.break
+def parse(data)
   patterns = data[0].split(', ')
   designs = data[2, data.size-2]
+  [patterns, designs]
+end
 
-  count = 0
-  designs.each do |design|
-    count += 1 if match?(design, patterns)
+def p1(data)
+  # binding.break
+  patterns, designs = parse(data)
+
+  designs.inject(0) do |sum, design|
+    sum + (match?(design, patterns) ? 1 : 0)
   end
-  count
 end
 
 def match?(design, patterns)
@@ -36,15 +39,11 @@ def match?(design, patterns)
 end
 
 def p2(data)
-  patterns = data[0].split(', ')
-  designs = data[2, data.size-2]
+  patterns, designs = parse(data)
 
-  count = 0
-  designs.each do |design|
-    p "===== #{design}"
-    count += matches(design, patterns)
+  designs.inject(0) do |sum, design|
+    sum + matches(design, patterns)
   end
-  count
 end
 
 @cache = {}
@@ -62,7 +61,6 @@ def matches(design, patterns)
     end
     k += 1
   end
-  p "#{design}: #{result}"
   @cache[design] = result
   result
 end
