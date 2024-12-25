@@ -93,6 +93,14 @@ def p2(data)
     i += 1
   end
 
+  # manually check these bits
+  # 4
+  # 5
+  # 10
+  # 11
+  # 22
+  # 38
+
   ["pmd", "cgh", "z23", "frt", "z05", "tst", "z11", "sps"].sort.join ','
 end
 
