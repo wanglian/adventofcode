@@ -6,9 +6,7 @@ end
 
 def p1(data)
   # binding.break
-  data.inject(0) do |sum, row|
-    sum + check(row)
-  end
+  data.sum { |row| check(row) }
 end
 
 def check(row, m=2)
@@ -28,9 +26,7 @@ def check(row, m=2)
 end
 
 def p2(data)
-  data.inject(0) do |sum, row|
-    sum + check(row, 12)
-  end
+  data.sum { |row| check(row, 12) }
 end
 
 p "Problem 1:"
