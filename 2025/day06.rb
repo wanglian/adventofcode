@@ -11,7 +11,6 @@ def p1(data)
 end
 
 def calc(row)
-  return 0 if row.empty?
   operation = row.pop
   row = row.map(&:to_i)
   case operation
@@ -25,7 +24,6 @@ def calc(row)
 end
 
 def p2(data)
-  size = data.size
   operations = data.pop.split(" ")
   data = data.map { |row| row.split("") }.transpose.map(&:join).map(&:strip)
   data = data.slice_when { |a, b| a == "" }.to_a
