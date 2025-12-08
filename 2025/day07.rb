@@ -27,9 +27,8 @@ end
 
 def p2(data)
   beams = {data[0].index("S") => 1}
-  i = 1
-  while i < data.size
-    row = data[i]
+  data.each_with_index do |row, i|
+    next if i == 0
     tmp = {}
     beams.keys.each do |b|
       if row[b] == '^'
@@ -43,7 +42,6 @@ def p2(data)
       end
     end
     beams = tmp
-    i += 1
   end
   beams.values.sum
 end
