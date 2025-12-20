@@ -8,19 +8,39 @@ get_input("11").each do |row|
 end
 
 def p1(data)
-  # binding.break
-  # dfs(data, [], 'you')
+  dfs(data, [], 'you')
+end
+
+def dfs(data, path, current)
+  if current == 'out'
+    return 1
+  end
+
+  outputs = data[current]
+  outputs.map do |output|
+    if path.include?(output)
+      0
+    else
+      next_path = path.dup
+      next_path << current
+      dfs(data, next_path, output)
+    end
+  end.sum
+end
+
+def p2(data)
+  dfs2(data, [], 'svr', 0)
 end
 
 @cache = {}
-def dfs(data, path, current, &block)
-  key = "#{path.join('-')}:#{current}".hash
+def dfs2(data, path, current, pass)
+  key = "#{current}-#{pass}"
   if @cache[key]
     return @cache[key]
   end
 
   if current == 'out'
-    return block_given? ? yield(path) : 1
+    return pass == 3 ? 1 : 0
   end
 
   outputs = data[current]
@@ -30,41 +50,17 @@ def dfs(data, path, current, &block)
     else
       next_path = path.dup
       next_path << current
-      dfs(data, next_path, output, &block)
+      dfs2(data, next_path, output, check_pass(pass, current))
     end
   end.sum
   @cache[key] = result
   result
 end
 
-def p2(data)
-  # TODO: improve performance
-  dfs(data, [], 'svr') do |path|
-    path.include?('fft') && path.include?('dac') ? 1 : 0
-  end
-end
-
-def dfs2(data, path, current, out, pass)
-  if current == out
-    return path.include?(pass) ? 1 : 0
-  end
-  if current == 'out'
-    return 0
-  end
-
-  outputs = data[current]
-  if outputs.nil?
-    p current, path
-  end
-  outputs.map do |output|
-    if path.include?(output)
-      0
-    else
-      next_path = path.dup
-      next_path << current
-      dfs2(data, next_path, output, out, pass)
-    end
-  end.sum
+def check_pass(pass, current)
+  pass |= 1 if current == 'fft'
+  pass |= 2 if current == 'dac'
+  pass
 end
 
 p "Problem 1:"
