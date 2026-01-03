@@ -12,11 +12,11 @@ end
 def p1(data)
   # binding.break
   data.map do |target, buttons|
-    min_presses(target, buttons)
+    bfs(target, buttons)
   end.sum
 end
 
-def min_presses(target, buttons)
+def bfs(target, buttons)
   size = target.size
   max = 1 << size
   target = target.split('').map { |l| l == '#' ? 1 : 0 }.join.to_i(2)
@@ -29,7 +29,6 @@ def min_presses(target, buttons)
 
   visited = Array.new(max, false)
   presses = Array.new(max, 0)
-  # BFS
   visited[start] = true
   queue = [start]
   while state = queue.shift
@@ -50,12 +49,45 @@ end
 
 def p2(data)
   data.map do |ignore, buttons, target|
-    min_presses2(buttons, target)
+    dfs(buttons, Array.new(target.size, 0), target)
   end.sum
 end
 
-def min_presses2(buttons, target)
-  # TODO
+def valid?(buttons, counter, target)
+  state = Array.new(target.size, 0)
+  buttons.each_with_index do |button, i|
+    button.each do |b|
+      state[b] += counter[i]
+    end
+  end
+  state == target
+end
+
+def dfs(buttons, state, target)
+  arrays = buttons.map do |button|
+    max = button.map { |b| target[b] }.max
+    (0..max).to_a
+  end
+
+  result = -1
+  arrays[0].product(*arrays[1..-1]).each do |counter|
+    if valid?(buttons, counter, target)
+      re = counter.sum
+      if result == -1 || re < result
+        result = re
+      end
+    end
+  end
+
+  result
+end
+
+def press(button, state)
+  button.each { |b| state[b] += 1}
+end
+
+def overflow?(state, target)
+  state.map.with_index { |k, i| k > target[i] }.any?(true)
 end
 
 p "Problem 1:"
